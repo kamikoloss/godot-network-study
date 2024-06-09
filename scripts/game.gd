@@ -22,11 +22,11 @@ func _start_network(is_server_mode: bool) -> void:
 		multiplayer.peer_connected.connect(_on_peer_connected)
 		multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 		_peer.create_server(PORT)
-		print("server is listening on {0}:{1}".format([ADDRESS, PORT]))
+		print("server is listening on %s:$s" % [ADDRESS, PORT])
 	# Client の場合
 	else:
 		_peer.create_client(ADDRESS, PORT)
-		print("client connect to {0}:{1}".format([ADDRESS, PORT]))
+		print("client connect to %s:%s" % [ADDRESS, PORT])
 
 	multiplayer.multiplayer_peer = _peer
 
