@@ -1,7 +1,7 @@
 extends Node
 
 
-const PORT = 9090
+const PORT = 9080
 
 
 var mp_peer := WebSocketMultiplayerPeer.new()
