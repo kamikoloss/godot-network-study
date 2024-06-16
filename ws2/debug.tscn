@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjca4gre7c34k"]
+
+[ext_resource type="PackedScene" uid="uid://ociboj7e10w4" path="res://server.tscn" id="1_3fk6o"]
+[ext_resource type="PackedScene" uid="uid://c1xtvmpowyk2" path="res://client.tscn" id="2_e3j7a"]
+
+[node name="Debug" type="Node"]
+
+[node name="Server" parent="." instance=ExtResource("1_3fk6o")]
+
+[node name="GridContainer" type="GridContainer" parent="."]
+offset_right = 1920.0
+offset_bottom = 1080.0
+columns = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="GridContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Client" parent="GridContainer/MarginContainer" instance=ExtResource("2_e3j7a")]
+scale = Vector2(0.5, 0.5)
+
+[node name="MarginContainer2" type="MarginContainer" parent="GridContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Client" parent="GridContainer/MarginContainer2" instance=ExtResource("2_e3j7a")]
+scale = Vector2(0.5, 0.5)
+
+[node name="MarginContainer3" type="MarginContainer" parent="GridContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Client" parent="GridContainer/MarginContainer3" instance=ExtResource("2_e3j7a")]
+scale = Vector2(0.5, 0.5)
+
+[node name="MarginContainer4" type="MarginContainer" parent="GridContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Client" parent="GridContainer/MarginContainer4" instance=ExtResource("2_e3j7a")]
+scale = Vector2(0.5, 0.5)
