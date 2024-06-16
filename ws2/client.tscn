@@ -33,6 +33,9 @@ texture = ExtResource("3_t353s")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LocalNodes/Ground"]
 shape = SubResource("RectangleShape2D_x0om8")
 
+[node name="Player" parent="LocalNodes" instance=ExtResource("2_82lgy")]
+position = Vector2(960, 540)
+
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(160, 40)
 offset_right = 8.0

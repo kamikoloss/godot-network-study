@@ -20,6 +20,7 @@ size_flags_vertical = 3
 
 [node name="Client" parent="GridContainer/MarginContainer" instance=ExtResource("2_e3j7a")]
 scale = Vector2(0.5, 0.5)
+_player_name = "Player1"
 
 [node name="MarginContainer2" type="MarginContainer" parent="GridContainer"]
 clip_contents = true
@@ -29,6 +30,7 @@ size_flags_vertical = 3
 
 [node name="Client" parent="GridContainer/MarginContainer2" instance=ExtResource("2_e3j7a")]
 scale = Vector2(0.5, 0.5)
+_player_name = "Player2"
 
 [node name="MarginContainer3" type="MarginContainer" parent="GridContainer"]
 clip_contents = true
@@ -38,6 +40,7 @@ size_flags_vertical = 3
 
 [node name="Client" parent="GridContainer/MarginContainer3" instance=ExtResource("2_e3j7a")]
 scale = Vector2(0.5, 0.5)
+_player_name = "Player3"
 
 [node name="MarginContainer4" type="MarginContainer" parent="GridContainer"]
 clip_contents = true
@@ -47,3 +50,4 @@ size_flags_vertical = 3
 
 [node name="Client" parent="GridContainer/MarginContainer4" instance=ExtResource("2_e3j7a")]
 scale = Vector2(0.5, 0.5)
+_player_name = "Player4"
