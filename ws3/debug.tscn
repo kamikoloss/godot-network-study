@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://b1k44dcfee3s0"]
+[gd_scene load_steps=3 format=3 uid="uid://b1k44dcfee3s0"]
 
+[ext_resource type="PackedScene" uid="uid://cmk1ygfw28t1f" path="res://server.tscn" id="1_27pai"]
 [ext_resource type="PackedScene" uid="uid://d2dm0ynnjvke" path="res://client.tscn" id="1_ly18v"]
 
 [node name="Debug" type="Node"]
+
+[node name="Server" parent="." instance=ExtResource("1_27pai")]
 
 [node name="GridContainer" type="GridContainer" parent="."]
 offset_right = 1280.0
