@@ -7,16 +7,12 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x0om8"]
 size = Vector2(128, 128)
 
-[node name="Client" type="Node2D" node_paths=PackedStringArray("_network_nodes", "_connect_button")]
+[node name="Client" type="Node2D" node_paths=PackedStringArray("_network_nodes", "_local_nodes", "_connect_button")]
 script = ExtResource("1_spyrx")
 _player_scene = ExtResource("2_82lgy")
 _network_nodes = NodePath("NetworkNodes")
+_local_nodes = NodePath("LocalNodes")
 _connect_button = NodePath("Button")
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
-_spawnable_scenes = PackedStringArray("res://player.tscn")
-spawn_path = NodePath("../NetworkNodes")
-spawn_limit = 8
 
 [node name="NetworkNodes" type="Node2D" parent="."]
 position = Vector2(960, 540)
@@ -32,9 +28,6 @@ texture = ExtResource("3_t353s")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LocalNodes/Ground"]
 shape = SubResource("RectangleShape2D_x0om8")
-
-[node name="Player" parent="LocalNodes" instance=ExtResource("2_82lgy")]
-position = Vector2(960, 540)
 
 [node name="Button" type="Button" parent="."]
 custom_minimum_size = Vector2(160, 40)

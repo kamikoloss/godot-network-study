@@ -6,13 +6,13 @@ const ADDRESS = "ws://localhost:9090"
 
 @export var _player_scene: PackedScene
 @export var _network_nodes: Node2D
+@export var _local_nodes: Node2D
 @export var _connect_button: Button
 
 @export var _player_name: String = "Player"
 
 
 var mp_peer := WebSocketMultiplayerPeer.new()
-var peer := WebSocketPeer.new()
 
 
 func _ready() -> void:
@@ -50,11 +50,17 @@ func _on_server_disconnected() -> void:
 
 
 func _on_connect_button_pressed() -> void:
+	# 自機を作成する
+	var _me = _player_scene.instantiate()
+	_local_nodes.add_child(_me)
+
 	var _error = mp_peer.create_client(ADDRESS)
-	#var _error = peer.connect_to_url(ADDRESS)
 
 	if _error == OK:
 		print("[Client %s] succeeded to connect to %s" % [_player_name, ADDRESS])
 	else:
 		print("[Client %s] failed to connect to %s for %s" % [_player_name, ADDRESS, error_string(_error)])
 	multiplayer.multiplayer_peer = mp_peer
+
+	var message = { "message": 0, "id": mp_peer.get_unique_id() }
+	multiplayer.multiplayer_peer.put_packet(JSON.stringify(message).to_utf8_buffer())
