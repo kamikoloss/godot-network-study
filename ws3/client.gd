@@ -11,9 +11,12 @@ const PORT = 8080
 # UI
 @export var _connect_button: Button
 @export var _ping_label: Label
+@export var _ping_avg_label: Label
 
-var _server_unix_time: float = 0.0
+# Ping
 var _ping_refresh_timer: float = 0.0
+var _recent_ping_list: Array[float] = []
+var _recent_ping_list_max_size: int = 10
 
 
 func _ready() -> void:
@@ -25,13 +28,13 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	# Ping
-	if 0.0 < _server_unix_time:
+	if 0 < _recent_ping_list.size():
 		_ping_refresh_timer += delta
 		if _ping_refresh_interval < _ping_refresh_timer:
-			_ping_refresh_timer = 0.0
-			var local_unix_time = Time.get_unix_time_from_system()
-			var ping_ms = snappedf((local_unix_time -_server_unix_time) * 1000, 0.01)
-			_ping_label.text = "Ping: %sms" % str(ping_ms)
+			_ping_refresh_timer = 0
+			var ping_avg = _recent_ping_list.reduce(func(a, n): return a + n, 0.0) / _recent_ping_list.size()
+			_ping_label.text = "Ping: %sms" % str(snappedf(_recent_ping_list[-1] * 1000, 0.01))
+			_ping_avg_label.text = "(Avg: %sms)" % str(snappedf(ping_avg * 1000, 0.01))
 
 
 func _on_web_socket_client_connected_to_server():
@@ -45,7 +48,13 @@ func _on_web_socket_client_connection_closed():
 func _on_web_socket_client_message_received(message):
 	#print("[Client] Message received from server. Message: %s" % [message])
 	var msg = JSON.parse_string(message)
-	_server_unix_time = msg["time"]
+	
+	# time
+	var ping = Time.get_unix_time_from_system() - msg["time"]
+	_recent_ping_list.append(ping)
+	if _recent_ping_list_max_size < _recent_ping_list.size():
+		_recent_ping_list.pop_front()
+		print(_recent_ping_list)
 
 
 func _on_connect_button_pressed():
