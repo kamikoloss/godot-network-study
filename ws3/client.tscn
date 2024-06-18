@@ -7,10 +7,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rp5tg"]
 size = Vector2(128, 128)
 
-[node name="Client" type="Node2D" node_paths=PackedStringArray("_web_socket_client", "_connect_button")]
+[node name="Client" type="Node2D" node_paths=PackedStringArray("_web_socket_client", "_connect_button", "_ping_label")]
 script = ExtResource("1_dyupq")
 _web_socket_client = NodePath("WebSocketClient")
-_connect_button = NodePath("ConnectButton")
+_connect_button = NodePath("Connect")
+_ping_label = NodePath("Ping")
 
 [node name="WebSocketClient" parent="." instance=ExtResource("2_al7l1")]
 
@@ -28,7 +29,14 @@ shape = SubResource("RectangleShape2D_rp5tg")
 
 [node name="NetworkNodes" type="Node2D" parent="."]
 
-[node name="ConnectButton" type="Button" parent="."]
-offset_right = 160.0
+[node name="Connect" type="Button" parent="."]
+offset_left = 160.0
+offset_right = 320.0
 offset_bottom = 40.0
 text = "Connect"
+
+[node name="Ping" type="Label" parent="."]
+modulate = Color(0, 1, 0, 1)
+offset_right = 160.0
+offset_bottom = 40.0
+text = "Ping: 9999ms"
