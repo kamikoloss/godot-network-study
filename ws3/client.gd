@@ -31,12 +31,16 @@ var _ping_refresh_timer: float = 0.0
 var _recent_ping_list: Array[float] = []
 var _recent_ping_list_max_size: int = 10
 
+var _tween: Tween = null
+
 
 func _ready() -> void:
 	_ws_client.connected_to_server.connect(_on_web_socket_client_connected_to_server)
 	_ws_client.connection_closed.connect(_on_web_socket_client_connection_closed)
 	_ws_client.message_received.connect(_on_web_socket_client_message_received)
 	_connect_button.pressed.connect(_on_connect_button_pressed)
+
+	_tween = create_tween()
 
 
 func _process(delta: float) -> void:
@@ -46,6 +50,7 @@ func _process(delta: float) -> void:
 
 func _on_web_socket_client_connected_to_server():
 	print("[Client] Connected to server!")
+	_connect_button.disabled = true
 
 
 func _on_web_socket_client_connection_closed():
@@ -64,14 +69,20 @@ func _on_web_socket_client_message_received(message: Variant):
 
 	# players
 	for peer_id in message["players"]:
+		var other_player: Player = null
+		var pos = message["players"][peer_id]["position"]
+
 		# Player が未作成の場合: 作成する
 		if not _other_players.has(peer_id):
-			var other_player = _player_scene.instantiate()
+			other_player = _player_scene.instantiate()
+			other_player.position = pos
 			_network_nodes.add_child(other_player)
 			_other_players[peer_id] = other_player
-		# Player を移動させる
-		_other_players[peer_id].position = message["players"][peer_id]["position"]
+		else:
+			other_player = _other_players[peer_id]
 
+		# Player を移動させる
+		_tween.tween_property(other_player, "position", pos, 0.05)
 
 
 func _on_connect_button_pressed():
