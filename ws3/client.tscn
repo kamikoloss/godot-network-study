@@ -8,13 +8,15 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rp5tg"]
 size = Vector2(128, 128)
 
-[node name="Client" type="Node2D" node_paths=PackedStringArray("_web_socket_client", "_player", "_connect_button", "_ping_label", "_ping_avg_label")]
+[node name="Client" type="Node2D" node_paths=PackedStringArray("_ws_client", "_player", "_network_nodes", "_connect_button", "_ping_label", "_ping_avg_label")]
 script = ExtResource("1_dyupq")
-_web_socket_client = NodePath("WebSocketClient")
+_ws_client = NodePath("WebSocketClient")
 _player = NodePath("LocalNodes/Player")
+_network_nodes = NodePath("NetworkNodes")
 _connect_button = NodePath("UI/Connect")
 _ping_label = NodePath("UI/Ping")
 _ping_avg_label = NodePath("UI/PingAvg")
+_player_scene = ExtResource("4_cwga6")
 
 [node name="WebSocketClient" parent="." instance=ExtResource("2_al7l1")]
 
