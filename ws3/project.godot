@@ -11,9 +11,16 @@ config_version=5
 [application]
 
 config/name="ws3"
-run/main_scene="res://debug.tscn"
+run/main_scene="res://server.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[debug]
+
+gdscript/warnings/unsafe_property_access=1
+gdscript/warnings/unsafe_method_access=1
+gdscript/warnings/unsafe_cast=1
+gdscript/warnings/unsafe_call_argument=1
 
 [display]
 

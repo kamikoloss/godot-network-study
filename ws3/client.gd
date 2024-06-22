@@ -1,8 +1,8 @@
 extends Node2D
 
 
-const ADDRESS = "ws://localhost"
-const PORT = 8080
+const ADDRESS = "ws://ws.gloxi.net/ws3"
+const PORT = 80
 
 
 # WebSocket
