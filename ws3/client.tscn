@@ -44,6 +44,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Connect" type="Button" parent="UI"]
+layout_mode = 0
 offset_left = 1120.0
 offset_right = 1280.0
 offset_bottom = 40.0
@@ -51,11 +52,13 @@ text = "Connect"
 
 [node name="Ping" type="Label" parent="UI"]
 modulate = Color(0, 1, 0, 1)
+layout_mode = 0
 offset_right = 160.0
 offset_bottom = 40.0
 text = "Ping: 9999ms"
 
 [node name="PingAvg" type="Label" parent="UI"]
+layout_mode = 0
 offset_top = 20.0
 offset_right = 160.0
 offset_bottom = 60.0

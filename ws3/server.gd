@@ -51,7 +51,7 @@ func _parse_args() -> void:
 			var key_value = arg.split("=")
 			# --tick-rate
 			if key_value[0] == "--tick-rate":
-				_send_interval = 1 / int(key_value[1])
+				_send_interval = 1.0 / float(key_value[1])
 		else:
 			pass
 
