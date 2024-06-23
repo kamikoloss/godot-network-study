@@ -1,10 +1,10 @@
 extends Node2D
 
 
-#const ADDRESS = "ws://ws.gloxi.net/ws3"
-#const PORT = 80
-const ADDRESS = "ws://localhost"
-const PORT = 8003
+const ADDRESS = "wss://ws.gloxi.net/ws3"
+const PORT = 443
+#const ADDRESS = "ws://localhost"
+#const PORT = 8003
 
 
 # WebSocket
@@ -110,7 +110,7 @@ func _process_refresh_ping(delta: float) -> void:
 	_ping_average_label.text = "Average: %s ms" % str(snappedf(ping_avg * 1000, 0.01))
 
 
-# 接続完了メッセージを受信したときの処理
+# 接続完了を受信したときの処理
 func _on_received_connected(message: Variant) -> void:
 	if message.has("id"):
 		_player_id = message["id"]
@@ -126,14 +126,14 @@ func _on_received_players(message: Variant) -> void:
 		return
 
 	# time
-	# 自分が送信した最新の Unixtime を元に ping を計算する
+	# サーバーに送信した Unixtime を元に ping を計算する
 	var time = players[_player_id]["time"]
 	var ping = Time.get_unix_time_from_system() - time
 	_recent_ping_list.append(ping)
 	if _recent_ping_list_max_size < _recent_ping_list.size():
 		_recent_ping_list.pop_front()
-	#print(_recent_ping_list)
-	# 自プレイヤーの情報を削除する
+
+	# 自プレイヤーの情報を削除する (これ以降の処理で不要なため)
 	players.erase(_player_id)
 
 	# position
@@ -143,11 +143,11 @@ func _on_received_players(message: Variant) -> void:
 		var other_player: Player = null
 		var pos = players[peer_id]["position"]
 
-		# 他プレイヤーが未作成の場合: 作成する (ローカルに出現する)
+		# 他プレイヤーがまだ未作成の場合: 作成する (出現する)
 		if not _other_players.has(peer_id):
 			other_player = _player_scene.instantiate()
 			other_player.position = players[peer_id]["position"]
-			other_player.is_local = false
+			other_player.is_other = false
 			_network_nodes.add_child(other_player)
 			_other_players[peer_id] = other_player
 		else:

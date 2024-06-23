@@ -3,16 +3,16 @@ class_name Player
 
 
 const SPEED = 400.0
-const JUMP_VELOCITY = -800.0
+const JUMP_VELOCITY = -1600.0
 
 
-var gravity = 3200
-var is_local = true
+var gravity = 4800
+var is_other = false
 
 
 func _ready() -> void:
-	# ローカルで動かしている Player でない場合: 操作および物理を無効にする
-	if not is_local:
+	# 他プレイヤーの場合: 操作および物理を無効にする
+	if is_other:
 		set_physics_process(false)
 
 

@@ -13,6 +13,7 @@ var _send_timer: float = 0.0
 
 # 接続しているプレイヤーの情報
 # { <PeerID>: { "time": <Unixtime>, "position": <Vector2> } }
+# TODO: クラスを作る
 var _players: Dictionary = {}
 
 
