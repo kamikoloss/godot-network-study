@@ -28,13 +28,13 @@ const PORT = 8003
 var _send_timer: float = 0.0
 var _player_id: int = 0
 var _other_players: Dictionary = {}
+var _other_players_tween: Dictionary = {}
 
 # Ping
 var _ping_refresh_timer: float = 0.0
 var _recent_ping_list: Array[float] = []
 var _recent_ping_list_max_size: int = 10
 
-var _tween: Tween = null
 
 
 func _ready() -> void:
@@ -42,8 +42,6 @@ func _ready() -> void:
 	_ws_client.connection_closed.connect(_on_web_socket_client_connection_closed)
 	_ws_client.message_received.connect(_on_web_socket_client_message_received)
 	_connect_button.pressed.connect(_on_connect_button_pressed)
-
-	_tween = create_tween()
 
 
 func _process(delta: float) -> void:
@@ -127,8 +125,15 @@ func _on_received_players(message: Variant) -> void:
 	if players[_player_id].is_empty():
 		return
 
-	# time だけ控えて自分の情報を削除する
+	# time
+	# 自分が送信した最新の Unixtime を元に ping を計算する
 	var time = players[_player_id]["time"]
+	var ping = Time.get_unix_time_from_system() - time
+	_recent_ping_list.append(ping)
+	if _recent_ping_list_max_size < _recent_ping_list.size():
+		_recent_ping_list.pop_front()
+	#print(_recent_ping_list)
+	# 自プレイヤーの情報を削除する
 	players.erase(_player_id)
 
 	# position
@@ -138,7 +143,7 @@ func _on_received_players(message: Variant) -> void:
 		var other_player: Player = null
 		var pos = players[peer_id]["position"]
 
-		# Player が未作成の場合: 作成する
+		# 他プレイヤーが未作成の場合: 作成する (ローカルに出現する)
 		if not _other_players.has(peer_id):
 			other_player = _player_scene.instantiate()
 			other_player.position = players[peer_id]["position"]
@@ -148,12 +153,9 @@ func _on_received_players(message: Variant) -> void:
 		else:
 			other_player = _other_players[peer_id]
 
-		# Player を移動させる
-		_tween.tween_property(other_player, "position", pos, 0.05)
-
-	# 自分が送信した最新の Unixtime を元に ping を計算する
-	var ping = Time.get_unix_time_from_system() - time
-	_recent_ping_list.append(ping)
-	if _recent_ping_list_max_size < _recent_ping_list.size():
-		_recent_ping_list.pop_front()
-	#print(_recent_ping_list)
+		# 他プレイヤーの座標を同期する
+		#other_player.position = pos
+		if _other_players_tween.has(peer_id):
+			_other_players_tween[peer_id].kill()
+		_other_players_tween[peer_id] = create_tween()
+		_other_players_tween[peer_id].tween_property(other_player, "position", pos, 0.05)
