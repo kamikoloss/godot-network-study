@@ -12,7 +12,7 @@ const PORT = 8003
 var _send_timer: float = 0.0
 
 # 接続しているプレイヤーの情報
-# { <PeerID>: { "position": <Vector2> } }
+# { <PeerID>: { "time": <Unixtime>, "position": <Vector2> } }
 var _players: Dictionary = {}
 
 
@@ -32,6 +32,10 @@ func _process(delta: float) -> void:
 func _on_web_socket_server_client_connected(peer_id: int):
 	print("[Server] New peer connected. ID: ", peer_id)
 	_players[peer_id] = {}
+
+	# 接続したクライアントに ID を教える
+	var message = { "type": 1, "id": peer_id }
+	_ws_server.send(peer_id, message)
 
 
 func _on_web_socket_server_client_disconnected(peer_id: int):
@@ -75,10 +79,9 @@ func _process_send(delta: float) -> void:
 	_send_timer = 0.0
 
 	for peer_id in _ws_server.peers:
-		var players = _players.duplicate()
-		players.erase(peer_id)
 		var message = {
+			"type": 2,
 			"time": Time.get_unix_time_from_system(),
-			"players": players,
+			"players": _players,
 		}
 		_ws_server.send(peer_id, message)

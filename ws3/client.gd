@@ -1,8 +1,10 @@
 extends Node2D
 
 
-const ADDRESS = "ws://ws.gloxi.net/ws3"
-const PORT = 80
+#const ADDRESS = "ws://ws.gloxi.net/ws3"
+#const PORT = 80
+const ADDRESS = "ws://localhost"
+const PORT = 8003
 
 
 # WebSocket
@@ -24,6 +26,7 @@ const PORT = 80
 
 
 var _send_timer: float = 0.0
+var _player_id: int = 0
 var _other_players: Dictionary = {}
 
 # Ping
@@ -55,34 +58,19 @@ func _on_web_socket_client_connected_to_server():
 
 func _on_web_socket_client_connection_closed():
 	print("[Client] Connection closed.")
+	_connect_button.disabled = false
 
 
 func _on_web_socket_client_message_received(message: Variant):
 	#print("[Client] Message received from server. Message: %s" % [message])
 
-	# time
-	var ping = Time.get_unix_time_from_system() - message["time"]
-	_recent_ping_list.append(ping)
-	if _recent_ping_list_max_size < _recent_ping_list.size():
-		_recent_ping_list.pop_front()
-	#print(_recent_ping_list)
-
-	# players
-	for peer_id in message["players"]:
-		var other_player: Player = null
-		var pos = message["players"][peer_id]["position"]
-
-		# Player が未作成の場合: 作成する
-		if not _other_players.has(peer_id):
-			other_player = _player_scene.instantiate()
-			other_player.position = pos
-			_network_nodes.add_child(other_player)
-			_other_players[peer_id] = other_player
-		else:
-			other_player = _other_players[peer_id]
-
-		# Player を移動させる
-		_tween.tween_property(other_player, "position", pos, 0.05)
+	if not message.has("type"):
+		return
+	match message["type"]:
+		1:
+			_on_received_connected(message)
+		2:
+			_on_received_players(message)
 
 
 func _on_connect_button_pressed():
@@ -103,6 +91,7 @@ func _process_send(delta: float) -> void:
 	_send_timer = 0.0
 
 	var message = {
+		"time": Time.get_unix_time_from_system(),
 		"position": _player.position,
 	}
 	_ws_client.send(message)
@@ -121,3 +110,50 @@ func _process_refresh_ping(delta: float) -> void:
 	var ping_avg = ping_sum / _recent_ping_list.size()
 	_ping_label.text = "Ping: %s ms" % str(snappedf(_recent_ping_list[-1] * 1000, 0.01))
 	_ping_avg_label.text = "(Avg: %s ms)" % str(snappedf(ping_avg * 1000, 0.01))
+
+
+# 接続完了メッセージを受信したときの処理
+func _on_received_connected(message: Variant) -> void:
+	if message.has("id"):
+		_player_id = message["id"]
+		print("[Client] my player id: %s" % _player_id)
+
+
+# プレイヤー情報を受信したときの処理
+func _on_received_players(message: Variant) -> void:
+	var players = message["players"]
+	if players.is_empty():
+		return
+	if players[_player_id].is_empty():
+		return
+
+	# time だけ控えて自分の情報を削除する
+	var time = players[_player_id]["time"]
+	players.erase(_player_id)
+
+	# position
+	for peer_id in players:
+		if players[peer_id].is_empty():
+			continue
+		var other_player: Player = null
+		var pos = players[peer_id]["position"]
+
+		# Player が未作成の場合: 作成する
+		if not _other_players.has(peer_id):
+			other_player = _player_scene.instantiate()
+			other_player.position = players[peer_id]["position"]
+			other_player.is_local = false
+			_network_nodes.add_child(other_player)
+			_other_players[peer_id] = other_player
+		else:
+			other_player = _other_players[peer_id]
+
+		# Player を移動させる
+		_tween.tween_property(other_player, "position", pos, 0.05)
+
+	# 自分が送信した最新の Unixtime を元に ping を計算する
+	var ping = Time.get_unix_time_from_system() - time
+	_recent_ping_list.append(ping)
+	if _recent_ping_list_max_size < _recent_ping_list.size():
+		_recent_ping_list.pop_front()
+	#print(_recent_ping_list)
