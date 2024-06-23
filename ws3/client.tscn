@@ -8,14 +8,15 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rp5tg"]
 size = Vector2(128, 128)
 
-[node name="Client" type="Node2D" node_paths=PackedStringArray("_ws_client", "_player", "_network_nodes", "_connect_button", "_ping_label", "_ping_avg_label")]
+[node name="Client" type="Node2D" node_paths=PackedStringArray("_ws_client", "_player", "_network_nodes", "_connect_button", "_ping_current_label", "_ping_average_label")]
 script = ExtResource("1_dyupq")
 _ws_client = NodePath("WebSocketClient")
+_send_interval = 0.1
 _player = NodePath("LocalNodes/Player")
 _network_nodes = NodePath("NetworkNodes")
 _connect_button = NodePath("UI/Connect")
-_ping_label = NodePath("UI/Ping")
-_ping_avg_label = NodePath("UI/PingAvg")
+_ping_current_label = NodePath("UI/Ping2")
+_ping_average_label = NodePath("UI/Ping3")
 _player_scene = ExtResource("4_cwga6")
 
 [node name="WebSocketClient" parent="." instance=ExtResource("2_al7l1")]
@@ -51,15 +52,19 @@ offset_bottom = 40.0
 text = "Connect"
 
 [node name="Ping" type="Label" parent="UI"]
-modulate = Color(0, 1, 0, 1)
 layout_mode = 0
 offset_right = 160.0
 offset_bottom = 40.0
-text = "Ping: 9999ms"
+text = "Ping"
 
-[node name="PingAvg" type="Label" parent="UI"]
-layout_mode = 0
+[node name="Ping2" type="Label" parent="UI"]
 offset_top = 20.0
 offset_right = 160.0
 offset_bottom = 60.0
-text = "(Avg: 9999ms)"
+text = "Current: 9999 ms"
+
+[node name="Ping3" type="Label" parent="UI"]
+offset_top = 40.0
+offset_right = 160.0
+offset_bottom = 80.0
+text = "Average: 9999 ms"

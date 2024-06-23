@@ -17,8 +17,8 @@ const PORT = 8003
 
 # UI
 @export var _connect_button: Button
-@export var _ping_label: Label
-@export var _ping_avg_label: Label
+@export var _ping_current_label: Label
+@export var _ping_average_label: Label
 @export var _ping_refresh_interval: float = 0.25
 
 # Scenes
@@ -33,7 +33,7 @@ var _other_players_tween: Dictionary = {}
 # Ping
 var _ping_refresh_timer: float = 0.0
 var _recent_ping_list: Array[float] = []
-var _recent_ping_list_max_size: int = 10
+var _recent_ping_list_max_size: int = 50
 
 
 
@@ -106,8 +106,8 @@ func _process_refresh_ping(delta: float) -> void:
 
 	var ping_sum = _recent_ping_list.reduce(func(a, n): return a + n, 0.0)
 	var ping_avg = ping_sum / _recent_ping_list.size()
-	_ping_label.text = "Ping: %s ms" % str(snappedf(_recent_ping_list[-1] * 1000, 0.01))
-	_ping_avg_label.text = "(Avg: %s ms)" % str(snappedf(ping_avg * 1000, 0.01))
+	_ping_current_label.text = "Current: %s ms" % str(snappedf(_recent_ping_list[-1] * 1000, 0.01))
+	_ping_average_label.text = "Average: %s ms" % str(snappedf(ping_avg * 1000, 0.01))
 
 
 # 接続完了メッセージを受信したときの処理
